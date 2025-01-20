@@ -35,6 +35,7 @@ dependencies = [
 web = [
     "fastapi",
     "anycorn",
+    "httpx",
 ]
 test = [
     "pytest >=8,<9",

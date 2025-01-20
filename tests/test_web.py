@@ -1,6 +1,6 @@
 import pytest
 
-from anyio import create_task_group
+from anyio import connect_tcp, create_task_group
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
@@ -11,6 +11,12 @@ pytestmark = pytest.mark.anyio
 
 
 async def test_web():
+    while True:
+        try:
+            await connect_tcp("127.0.0.1", 8000)
+        except OSError:
+            break
+
     class Subcomponent0(Component):
         async def prepare(self):
             self.app = await self.get_resource(FastAPI)

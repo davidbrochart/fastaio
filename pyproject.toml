@@ -32,6 +32,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+web = [
+    "fastapi",
+    "anycorn",
+]
 test = [
     "pytest >=8,<9",
     "trio >=0.27.0,<0.28",

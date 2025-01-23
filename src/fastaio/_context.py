@@ -35,15 +35,17 @@ class Context:
         self._context = {}
         self._resource_added = Event()
 
-    def add_resource(self, resource: Any, owner: "Component", types: Iterable | Any | None = None, exclusive: bool = False) -> Resource:
-        _resource = Resource(resource, owner, exclusive)
-        if types is None:
-            types = [type(resource)]
+    def get_resource_types(self, resource: Any, types: Iterable | Any | None = None) -> Iterable:
+        types = types if types is not None else [type(resource)]
         try:
             for resource_type in types:
                 break
         except TypeError as e:
             types = [types]
+        return types
+
+    def add_resource(self, resource: Any, owner: "Component", types: Iterable, exclusive: bool = False) -> Resource:
+        _resource = Resource(resource, owner, exclusive)
         for resource_type in types:
             resource_type_id = id(resource_type)
             if resource_type_id in self._context:

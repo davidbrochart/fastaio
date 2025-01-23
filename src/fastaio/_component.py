@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import sys
 from importlib import import_module
 
@@ -20,6 +21,7 @@ if TYPE_CHECKING:
 if sys.version_info < (3, 11):
     from exceptiongroup import ExceptionGroup  # pragma: no cover
 
+logging.disable()
 log = structlog.get_logger()
 
 
@@ -120,10 +122,11 @@ class Component:
 
     def add_resource(self, resource: Any, types: Iterable | Any | None = None, exclusive: bool = False) -> None:
         resource_id = id(resource)
-        self._added_resources[resource_id] = self._context.add_resource(resource, self, types, exclusive)
+        resource_types = self._context.get_resource_types(resource, types)
+        self._added_resources[resource_id] = self._context.add_resource(resource, self, resource_types, exclusive)
         if self.parent is not None:
-            self._added_resources[resource_id] = self.parent._context.add_resource(resource, self, types, exclusive)
-        log.debug("Component added resource", path=self.path, resource=repr(resource))
+            self._added_resources[resource_id] = self.parent._context.add_resource(resource, self, resource_types, exclusive)
+        log.debug("Component added resource", path=self.path, resource_types=resource_types)
 
     async def get_resource(self, resource_type: Any) -> Any:
         log.debug("Component getting resource", path=self.path, resource_type=resource_type)

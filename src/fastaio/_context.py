@@ -45,17 +45,19 @@ class Context:
         except TypeError as e:
             types = [types]
         for resource_type in types:
-            if resource_type in self._context:
+            resource_type_id = id(resource_type)
+            if resource_type_id in self._context:
                 raise RuntimeError(f'Resource type "{resource_type}" already exists')
-            self._context[resource_type] = _resource
+            self._context[resource_type_id] = _resource
             self._resource_added.set()
             self._resource_added = Event()
         return _resource
 
     async def get_resource(self, resource_type: Any, borrower: "Component") -> Resource:
+        resource_type_id = id(resource_type)
         while True:
-            if resource_type in self._context:
-                resource = self._context[resource_type]
+            if resource_type_id in self._context:
+                resource = self._context[resource_type_id]
                 if resource._exclusive:
                     while True:
                         if not resource._borrowers:

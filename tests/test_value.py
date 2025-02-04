@@ -78,10 +78,7 @@ async def test_value_level():
         async def start(self):
             self.value0 = Value0()
             self.put(self.value0)
-            try:
-                self.value1 = await self.get(Value1, timeout=0.1)
-            except TimeoutError:
-                self.value1 = None
+            self.value1 = await self.get(Value1, timeout=0.1)
             try:
                 self.value2 = await self.get(Value2, timeout=0.1)
             except TimeoutError:
@@ -95,14 +92,8 @@ async def test_value_level():
         async def start(self):
             self.value1 = Value1()
             self.put(self.value1)
-            try:
-                self.value0 = await self.get(Value0, timeout=0.1)
-            except TimeoutError:
-                self.value0 = None
-            try:
-                self.value2 = await self.get(Value2, timeout=0.1)
-            except TimeoutError:
-                self.value2 = None
+            self.value0 = await self.get(Value0, timeout=0.1)
+            self.value2 = await self.get(Value2, timeout=0.1)
 
     class Module2(Module):
         async def start(self):
@@ -112,10 +103,7 @@ async def test_value_level():
                 self.value0 = await self.get(Value0, timeout=0.1)
             except TimeoutError:
                 self.value0 = None
-            try:
-                self.value1 = await self.get(Value1, timeout=0.1)
-            except TimeoutError:
-                self.value1 = None
+            self.value1 = await self.get(Value1, timeout=0.1)
 
     async with Module0("module0") as module0:
         pass
